@@ -1,47 +1,33 @@
 package com.example.hashsearch;
 
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.widget.ListView;
 
 public class HashSearchMain extends Activity {
 	Tweet[] tweets;
@@ -76,7 +62,9 @@ public class HashSearchMain extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				
+		
+		ListView list = (ListView) findViewById(R.id_main.listView);
+		list.setAdapter(new TweetListAdapter(tweets, this));
 		
 	}
 	
@@ -123,11 +111,11 @@ public class HashSearchMain extends Activity {
     		postparams = params;
     		this.method = method;
     	}
-
+//zGetVar("Search")
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			String url = "http://search.twitter.com/search.json?q=%23"+zGetVar("Search")+"&result_type=mixed";
+			String url = "http://search.twitter.com/search.json?q=%23"+"aer201"+"&result_type=mixed";
 			HttpGet httpeg = new HttpGet(url);
 			HttpResponse httpResponse;
 			String json=null;

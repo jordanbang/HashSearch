@@ -53,6 +53,7 @@ public class Tweet {
 		setText(text_n);
 		setHandle(handle);
 		setName(name_n);
+		pic = pic.replace("normal", "bigger");
 		setPic(pic);
 		setDateCreated(created);
 	}
