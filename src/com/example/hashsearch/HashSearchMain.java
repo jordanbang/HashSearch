@@ -26,7 +26,11 @@ import org.json.JSONObject;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ListView;
 
 public class HashSearchMain extends Activity {
@@ -36,10 +40,30 @@ public class HashSearchMain extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SharedPref.initSharedPref(this);
-		if (zGetVar("Search").equalsIgnoreCase("")){
-			zSetVar("Search","aer201".toLowerCase(Locale.CANADA));
+		RefreshContents();	
+	}
+	
+	//parses the JSON array of results into Twitter Objects
+	public void JSONParse(JSONArray results) throws JSONException, ParseException{
+		tweets = new Tweet[results.length()];
+		SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
+		for(int x = 0; x< results.length(); x++){
+			JSONObject current = results.getJSONObject(x);
+			tweets[x] = new Tweet();
+			tweets[x].newTweet(current.getString("text"), 
+					current.getString("from_user"), 
+					current.getString("from_user_name"), 
+					current.getString("profile_image_url"), 
+					format.parse(current.getString("created_at")));
 		}
-		this.setTitle("#"+zGetVar("Search"));
+	}
+	
+	public void RefreshContents(){
+		if (zGetVar("Search").equalsIgnoreCase("")){
+			zSetVar("Search","bieber".toLowerCase(Locale.CANADA));
+		}
+		this.setTitle("");
+		this.setTitle("#"+zGetVar("Search").replace("#", ""));
 		setContentView(R.layout.activity_has_search_main);
 		
 		BackGroundTask back = new BackGroundTask("", "", null);
@@ -65,30 +89,52 @@ public class HashSearchMain extends Activity {
 		
 		ListView list = (ListView) findViewById(R.id_main.listView);
 		list.setAdapter(new TweetListAdapter(tweets, this));
-		
-	}
-	
-	//parses the JSON array of results into Twitter Objects
-	public void JSONParse(JSONArray results) throws JSONException, ParseException{
-		tweets = new Tweet[results.length()];
-		SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
-		for(int x = 0; x< results.length(); x++){
-			JSONObject current = results.getJSONObject(x);
-			tweets[x] = new Tweet();
-			tweets[x].newTweet(current.getString("text"), 
-					current.getString("from_user"), 
-					current.getString("from_user_name"), 
-					current.getString("profile_image_url"), 
-					format.parse(current.getString("created_at")));
-		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		//getMenuInflater().inflate(R.menu.activity_has_search_main, menu);
+		//Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.activity_has_search_main, menu);
 		return true;
 	}
+	
+	public boolean onOptionsItemSelected(MenuItem item){
+		int tm = item.getItemId();
+		switch(tm){
+		case R.id.menu_newhash:
+			getNewHashTag();
+			break;
+		case R.id.menu_refresh:
+			RefreshContents();
+			break;
+		}
+		return true;
+	}
+	
+	public void getNewHashTag(){
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+		alert.setTitle("Enter New Hashtag to Search");
+		final EditText input = new EditText(this);
+		input.setText("#");
+		input.setSelection(input.getText().length());
+		alert.setView(input);
+		alert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String val= input.getText().toString();
+				val = val.substring(1);
+				zSetVar("Search", input.getText().toString());
+				RefreshContents();
+			}
+		});
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {	
+			}
+		});
+		alert.show();
+	}
+	
 
 	public String zGetVar(String idName)
 	{
@@ -115,7 +161,7 @@ public class HashSearchMain extends Activity {
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			String url = "http://search.twitter.com/search.json?q=%23"+"aer201"+"&result_type=mixed";
+			String url = "http://search.twitter.com/search.json?q=%23"+zGetVar("Search")+"&result_type=mixed";
 			HttpGet httpeg = new HttpGet(url);
 			HttpResponse httpResponse;
 			String json=null;

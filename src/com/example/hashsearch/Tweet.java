@@ -2,12 +2,15 @@ package com.example.hashsearch;
 
 import java.util.Date;
 
+import android.graphics.Bitmap;
+
 public class Tweet {
 	private String text;
 	private Date date;
 	private String twitter_handle;
 	private String name;
 	private String pic_url;
+	private Bitmap bit;
 	
 	public String getText(){
 		return text;
@@ -27,6 +30,10 @@ public class Tweet {
 	
 	public Date getCreated(){
 		return date;
+	}
+	
+	public Bitmap getBitmap(){
+		return bit;
 	}
 	
 	public void setText(String text_n){
@@ -49,6 +56,10 @@ public class Tweet {
 		date = created;
 	}
 	
+	public void setBitmap(Bitmap bit_n){
+		bit = bit_n;
+	}
+	
 	public void newTweet(String text_n, String handle, String name_n, String pic, Date created){
 		setText(text_n);
 		setHandle(handle);
@@ -56,6 +67,7 @@ public class Tweet {
 		pic = pic.replace("normal", "bigger");
 		setPic(pic);
 		setDateCreated(created);
+		setBitmap(null);
 	}
 	
 }

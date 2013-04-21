@@ -9,10 +9,12 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.MeasureSpec;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -56,7 +58,14 @@ public class TweetListAdapter extends BaseAdapter {
 		((TextView)v.findViewById(R.id.tweet_name)).setText(tweet.getName());
 		((TextView)v.findViewById(R.id.tweet_text)).setText(tweet.getText());
 		((TextView)v.findViewById(R.id.tweet_date)).setText(format.format(tweet.getCreated()));
-		new DownloadImageTask((ImageView)v.findViewById(R.id.tweet_pic)).execute(tweet.getPic());
+		
+		//if (tweet.getBitmap()==null){
+			new DownloadImageTask((ImageView)v.findViewById(R.id.tweet_pic)).execute(tweet.getPic());
+			//tweet.setBitmap(((BitmapDrawable)((ImageView)v.findViewById(R.id.tweet_pic)).getDrawable()).getBitmap());
+		//}
+		//else{
+			//((ImageView) v.findViewById(R.id.tweet_pic)).setImageBitmap(tweet.getBitmap());
+		//}
 		return v;
 	}
 	
@@ -82,5 +91,53 @@ public class TweetListAdapter extends BaseAdapter {
 			bmImage.setImageBitmap(result);
 		}
 	}
+	
+//	private Bitmap getBitmap(String url) {
+////      PhotoToLoad photoToLoad = new PhotoToLoad(url, new ImageView(a));
+////      String filename = photoToLoad.url;
+//        //String filename = url;
+//        String filename = String.valueOf(url.hashCode());
+//        Log.v("TAG FILE :", filename);
+//        File f = new File(cacheDir, filename);
+//        // Is the bitmap in our cache?
+//        Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
+//        if (bitmap != null)
+//            return bitmap;
+//        else {
+//            // Nope, have to download it
+//            try {
+//                bitmap = BitmapFactory.decodeStream(new URL(url)
+//                        .openConnection().getInputStream());
+//                // save bitmap to cache for later
+//                writeFile(bitmap, f);
+//                return bitmap;
+//            } catch (FileNotFoundException ex) {
+//                ex.printStackTrace();
+//                Log.v("FILE NOT FOUND", "FILE NOT FOUND");
+//                return null;
+//            }catch (Exception e) {
+//                // TODO: handle exception
+//                e.printStackTrace();
+//                return null;
+//            }
+//        }
+//    }
+//
+//    private void writeFile(Bitmap bmp, File f) {
+//        FileOutputStream out = null;
+//
+//        try {
+//            out = new FileOutputStream(f);
+//            bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (out != null)
+//                    out.close();
+//            } catch (Exception ex) {
+//            }
+//        }
+//    }
 	
 }
