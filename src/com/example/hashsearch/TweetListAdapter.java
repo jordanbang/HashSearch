@@ -1,6 +1,8 @@
 package com.example.hashsearch;
 
+import java.io.File;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,52 +94,7 @@ public class TweetListAdapter extends BaseAdapter {
 		}
 	}
 	
-//	private Bitmap getBitmap(String url) {
-////      PhotoToLoad photoToLoad = new PhotoToLoad(url, new ImageView(a));
-////      String filename = photoToLoad.url;
-//        //String filename = url;
-//        String filename = String.valueOf(url.hashCode());
-//        Log.v("TAG FILE :", filename);
-//        File f = new File(cacheDir, filename);
-//        // Is the bitmap in our cache?
-//        Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
-//        if (bitmap != null)
-//            return bitmap;
-//        else {
-//            // Nope, have to download it
-//            try {
-//                bitmap = BitmapFactory.decodeStream(new URL(url)
-//                        .openConnection().getInputStream());
-//                // save bitmap to cache for later
-//                writeFile(bitmap, f);
-//                return bitmap;
-//            } catch (FileNotFoundException ex) {
-//                ex.printStackTrace();
-//                Log.v("FILE NOT FOUND", "FILE NOT FOUND");
-//                return null;
-//            }catch (Exception e) {
-//                // TODO: handle exception
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//    }
-//
-//    private void writeFile(Bitmap bmp, File f) {
-//        FileOutputStream out = null;
-//
-//        try {
-//            out = new FileOutputStream(f);
-//            bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (out != null)
-//                    out.close();
-//            } catch (Exception ex) {
-//            }
-//        }
-//    }
+
+	
 	
 }

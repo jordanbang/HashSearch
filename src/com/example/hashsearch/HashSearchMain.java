@@ -2,9 +2,13 @@ package com.example.hashsearch;
 
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,6 +32,9 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -35,11 +42,13 @@ import android.widget.ListView;
 
 public class HashSearchMain extends Activity {
 	Tweet[] tweets;
+	File cacheDir;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SharedPref.initSharedPref(this);
+		
 		RefreshContents();	
 	}
 	
@@ -66,7 +75,7 @@ public class HashSearchMain extends Activity {
 		this.setTitle("#"+zGetVar("Search").replace("#", ""));
 		setContentView(R.layout.activity_has_search_main);
 		
-		BackGroundTask back = new BackGroundTask("", "", null);
+		GetTweets back = new GetTweets("", "", null);
 		JSONObject j=null;
 		try {
 			j = back.execute().get();
@@ -146,18 +155,69 @@ public class HashSearchMain extends Activity {
 	        SharedPref.setVar(idName, newValue);
 	}
     
-    public class BackGroundTask extends AsyncTask<String, String, JSONObject>{
+//    private Bitmap getBitmap(String url) {
+//		
+//        String filename = String.valueOf(url.hashCode());
+//        Log.v("TAG FILE :", filename);
+//        File f = new File(cacheDir, filename);
+//        // Is the bitmap in our cache?
+//        Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
+//        if (bitmap != null)
+//            return bitmap;
+//        else {
+//            // Nope, have to download it
+//            try {
+//                bitmap = BitmapFactory.decodeStream(new URL(url)
+//                        .openConnection().getInputStream());
+//                // save bitmap to cache for later
+//                writeFile(bitmap, f);
+//                return bitmap;
+//            } catch (FileNotFoundException ex) {
+//                ex.printStackTrace();
+//                Log.v("FILE NOT FOUND", "FILE NOT FOUND");
+//                return null;
+//            }catch (Exception e) {
+//                // TODO: handle exception
+//                e.printStackTrace();
+//                return null;
+//            }
+//        }
+//    }
+//
+//    private void writeFile(Bitmap bmp, File f) {
+//        FileOutputStream out = null;
+//
+//        try {
+//            out = new FileOutputStream(f);
+//            bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                if (out != null)
+//                    out.close();
+//            } catch (Exception ex) {
+//            }
+//        }
+//        if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
+//	        cacheDir=new File(android.os.Environment.getExternalStorageDirectory(),"HashSearch");
+//	    else
+//	        cacheDir=this.getCacheDir();
+//	    if(!cacheDir.exists())
+//	        cacheDir.mkdirs();
+//    }
+    
+    public class GetTweets extends AsyncTask<String, String, JSONObject>{
     	List<NameValuePair> postparams = new ArrayList<NameValuePair>();
     	String URL = null;
     	String method = null;
     	InputStream is = null;
     	
-    	public BackGroundTask(String url, String method, List<NameValuePair> params){
+    	public GetTweets(String url, String method, List<NameValuePair> params){
     		URL = url;
     		postparams = params;
     		this.method = method;
     	}
-//zGetVar("Search")
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
