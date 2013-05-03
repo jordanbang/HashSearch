@@ -60,41 +60,37 @@ public class TweetListAdapter extends BaseAdapter {
 		((TextView)v.findViewById(R.id.tweet_name)).setText(tweet.getName());
 		((TextView)v.findViewById(R.id.tweet_text)).setText(tweet.getText());
 		((TextView)v.findViewById(R.id.tweet_date)).setText(format.format(tweet.getCreated()));
-		
-		//if (tweet.getBitmap()==null){
-			new DownloadImageTask((ImageView)v.findViewById(R.id.tweet_pic)).execute(tweet.getPic());
-			//tweet.setBitmap(((BitmapDrawable)((ImageView)v.findViewById(R.id.tweet_pic)).getDrawable()).getBitmap());
-		//}
-		//else{
-			//((ImageView) v.findViewById(R.id.tweet_pic)).setImageBitmap(tweet.getBitmap());
-		//}
+		if (tweet.getBitmap()!=null){
+			((ImageView) v.findViewById(R.id.tweet_pic)).setImageBitmap(tweet.getBitmap());
+		}else{
+			((ImageView)v.findViewById(R.id.tweet_pic)).setImageResource(R.drawable.ic_launcher);
+		}
 		return v;
 	}
 	
-	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap>{
-		ImageView bmImage;
-		public DownloadImageTask(ImageView bmImage){
-			this.bmImage=bmImage;
-		}
-		
-		protected Bitmap doInBackground (String... urls){
-			String urldisplay = urls[0];
-			Bitmap mIcon11 = null;
-			try{
-				InputStream in = new URL(urldisplay).openStream();
-				mIcon11 = BitmapFactory.decodeStream(in);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-			return mIcon11;
-		}
-		
-		protected void onPostExecute(Bitmap result){
-			bmImage.setImageBitmap(result);
-		}
-	}
-	
+//	private class DownloadImageTask extends AsyncTask<String, Void, Bitmap>{
+//		ImageView bmImage;
+//		public DownloadImageTask(ImageView bmImage){
+//			this.bmImage=bmImage;
+//		}
+//		
+//		protected Bitmap doInBackground (String... urls){
+//			String urldisplay = urls[0];
+//			Bitmap mIcon11 = null;
+//			try{
+//				InputStream in = new URL(urldisplay).openStream();
+//				mIcon11 = BitmapFactory.decodeStream(in);
+//			}catch(Exception e){
+//				e.printStackTrace();
+//			}
+//			return mIcon11;
+//		}
+//		
+//		protected void onPostExecute(Bitmap result){
+//			bmImage.setImageBitmap(result);
+//		}
+//	}
+//	
 
-	
 	
 }

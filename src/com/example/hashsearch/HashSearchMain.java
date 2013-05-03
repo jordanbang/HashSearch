@@ -31,6 +31,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,11 +45,13 @@ import android.widget.ListView;
 public class HashSearchMain extends Activity {
 	Tweet[] tweets;
 	File cacheDir;
+	TweetListAdapter tweetAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		SharedPref.initSharedPref(this);
+		setContentView(R.layout.activity_has_search_main);
 		
 		RefreshContents();	
 	}
@@ -55,6 +59,7 @@ public class HashSearchMain extends Activity {
 	//parses the JSON array of results into Twitter Objects
 	public void JSONParse(JSONArray results) throws JSONException, ParseException{
 		tweets = new Tweet[results.length()];
+		tweetAdapter = new TweetListAdapter(tweets,this);
 		SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss ZZZZ");
 		for(int x = 0; x< results.length(); x++){
 			JSONObject current = results.getJSONObject(x);
@@ -63,7 +68,9 @@ public class HashSearchMain extends Activity {
 					current.getString("from_user"), 
 					current.getString("from_user_name"), 
 					current.getString("profile_image_url"), 
-					format.parse(current.getString("created_at")));
+					format.parse(current.getString("created_at")),
+					tweetAdapter);
+			tweets[x].loadImage(tweetAdapter);
 		}
 	}
 	
@@ -72,9 +79,7 @@ public class HashSearchMain extends Activity {
 			zSetVar("Search","bieber".toLowerCase(Locale.CANADA));
 		}
 		this.setTitle("");
-		this.setTitle("#"+zGetVar("Search").replace("#", ""));
-		setContentView(R.layout.activity_has_search_main);
-		
+		this.setTitle("Searching #"+zGetVar("Search").replace("#", ""));
 		GetTweets back = new GetTweets("", "", null);
 		JSONObject j=null;
 		try {
@@ -95,9 +100,9 @@ public class HashSearchMain extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		this.setTitle("#"+zGetVar("Search").replace("#", ""));
 		ListView list = (ListView) findViewById(R.id_main.listView);
-		list.setAdapter(new TweetListAdapter(tweets, this));
+		list.setAdapter(tweetAdapter);		
 	}
 
 	@Override
@@ -154,59 +159,7 @@ public class HashSearchMain extends Activity {
 	{
 	        SharedPref.setVar(idName, newValue);
 	}
-    
-//    private Bitmap getBitmap(String url) {
-//		
-//        String filename = String.valueOf(url.hashCode());
-//        Log.v("TAG FILE :", filename);
-//        File f = new File(cacheDir, filename);
-//        // Is the bitmap in our cache?
-//        Bitmap bitmap = BitmapFactory.decodeFile(f.getPath());
-//        if (bitmap != null)
-//            return bitmap;
-//        else {
-//            // Nope, have to download it
-//            try {
-//                bitmap = BitmapFactory.decodeStream(new URL(url)
-//                        .openConnection().getInputStream());
-//                // save bitmap to cache for later
-//                writeFile(bitmap, f);
-//                return bitmap;
-//            } catch (FileNotFoundException ex) {
-//                ex.printStackTrace();
-//                Log.v("FILE NOT FOUND", "FILE NOT FOUND");
-//                return null;
-//            }catch (Exception e) {
-//                // TODO: handle exception
-//                e.printStackTrace();
-//                return null;
-//            }
-//        }
-//    }
-//
-//    private void writeFile(Bitmap bmp, File f) {
-//        FileOutputStream out = null;
-//
-//        try {
-//            out = new FileOutputStream(f);
-//            bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                if (out != null)
-//                    out.close();
-//            } catch (Exception ex) {
-//            }
-//        }
-//        if (android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED))
-//	        cacheDir=new File(android.os.Environment.getExternalStorageDirectory(),"HashSearch");
-//	    else
-//	        cacheDir=this.getCacheDir();
-//	    if(!cacheDir.exists())
-//	        cacheDir.mkdirs();
-//    }
-    
+       
     public class GetTweets extends AsyncTask<String, String, JSONObject>{
     	List<NameValuePair> postparams = new ArrayList<NameValuePair>();
     	String URL = null;
@@ -218,6 +171,8 @@ public class HashSearchMain extends Activity {
     		postparams = params;
     		this.method = method;
     	}
+    	
+    	
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -254,6 +209,7 @@ public class HashSearchMain extends Activity {
 			}
 			return jobj;
 		}
+		
     }
 
 }
