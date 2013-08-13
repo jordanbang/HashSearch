@@ -65,6 +65,7 @@ public class TweetListAdapter extends BaseAdapter {
 		}else{
 			((ImageView)v.findViewById(R.id.tweet_pic)).setImageResource(R.drawable.ic_launcher);
 		}
+		
 		return v;
 	}
 	

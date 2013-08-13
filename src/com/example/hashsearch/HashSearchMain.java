@@ -34,11 +34,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -52,6 +56,13 @@ public class HashSearchMain extends Activity {
 		super.onCreate(savedInstanceState);
 		SharedPref.initSharedPref(this);
 		setContentView(R.layout.activity_has_search_main);
+		
+		Button button = new Button(this);
+		button.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+			}
+		});
 		
 		RefreshContents();	
 	}
@@ -75,13 +86,13 @@ public class HashSearchMain extends Activity {
 	}
 	
 	public void RefreshContents(){
-		if (zGetVar("Search").equalsIgnoreCase("")){
-			zSetVar("Search","bieber".toLowerCase(Locale.CANADA));
+		if (getVar("Search").equalsIgnoreCase("")){
+			setVar("Search","bieber".toLowerCase(Locale.CANADA));
 		}
 		this.setTitle("");
-		this.setTitle("Searching #"+zGetVar("Search").replace("#", ""));
+		this.setTitle("Searching #"+getVar("Search").replace("#", ""));
 		GetTweets back = new GetTweets("", "", null);
-		JSONObject j=null;
+		JSONObject j = null;
 		try {
 			j = back.execute().get();
 		} catch (InterruptedException e) {
@@ -100,7 +111,7 @@ public class HashSearchMain extends Activity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.setTitle("#"+zGetVar("Search").replace("#", ""));
+		this.setTitle("#"+getVar("Search").replace("#", ""));
 		ListView list = (ListView) findViewById(R.id_main.listView);
 		list.setAdapter(tweetAdapter);		
 	}
@@ -137,7 +148,7 @@ public class HashSearchMain extends Activity {
 			public void onClick(DialogInterface dialog, int which) {
 				String val= input.getText().toString();
 				val = val.substring(1);
-				zSetVar("Search", input.getText().toString());
+				setVar("Search", input.getText().toString());
 				RefreshContents();
 			}
 		});
@@ -150,12 +161,12 @@ public class HashSearchMain extends Activity {
 	}
 	
 
-	public String zGetVar(String idName)
+	public String getVar(String idName)
 	{
 	        return SharedPref.getVar(idName, "");
 	}
 
-    public void zSetVar(String idName, String newValue)
+    public void setVar(String idName, String newValue)
 	{
 	        SharedPref.setVar(idName, newValue);
 	}
@@ -176,7 +187,7 @@ public class HashSearchMain extends Activity {
 		@Override
 		protected JSONObject doInBackground(String... params) {
 			DefaultHttpClient httpClient = new DefaultHttpClient();
-			String url = "http://search.twitter.com/search.json?q=%23"+zGetVar("Search")+"&result_type=mixed";
+			String url = "http://search.twitter.com/search.json?q=%23"+getVar("Search")+"&result_type=mixed";
 			HttpGet httpeg = new HttpGet(url);
 			HttpResponse httpResponse;
 			String json=null;
