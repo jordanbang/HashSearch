@@ -1,4 +1,4 @@
-package com.example.hashsearch;
+package com.jordanbang.hashsearch;
 
 
 import java.io.BufferedReader;
@@ -22,6 +22,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.example.hashsearch.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

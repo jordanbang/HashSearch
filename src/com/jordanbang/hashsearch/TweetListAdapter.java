@@ -1,6 +1,9 @@
-package com.example.hashsearch;
+package com.jordanbang.hashsearch;
 
 import java.text.SimpleDateFormat;
+
+import com.example.hashsearch.R;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;

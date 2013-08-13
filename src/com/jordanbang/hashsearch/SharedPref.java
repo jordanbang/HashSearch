@@ -1,4 +1,4 @@
-package com.example.hashsearch;
+package com.jordanbang.hashsearch;
 
 import android.app.Activity;
 import android.content.SharedPreferences;

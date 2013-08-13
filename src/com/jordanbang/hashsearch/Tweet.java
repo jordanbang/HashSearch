@@ -1,4 +1,4 @@
-package com.example.hashsearch;
+package com.jordanbang.hashsearch;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
