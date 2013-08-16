@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,13 +18,15 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.example.hashsearch.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -213,6 +216,26 @@ public class HashSearchMain extends Activity {
 			return jobj;
 		}
 		
+    }
+    
+    public class TwitterAuthenticate extends AsyncTask<String, String, Void> {
+
+		@Override
+		protected Void doInBackground(String... arg0) {
+			DefaultHttpClient httpClient = new DefaultHttpClient();
+			HttpPost post = new HttpPost("https://api.twitter.com/1.1/oauth2/token");
+			post.setHeader(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=UTF-8");
+			post.setHeader("Authorization", "Basic dUdoWmZOaUR4NDNMNVBRV1ZucVNnOlpqaVVYVkhBeWQzd0YxUUhCdlRFbDR3UW1QVU9JdmU5clRob3NTVzY0a00=");
+			List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+			nameValuePair.add(new BasicNameValuePair("grant_type", "client_credentials"));
+			try {
+				post.setEntity(new UrlEncodedFormEntity(nameValuePair));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+    	
     }
 
 }
